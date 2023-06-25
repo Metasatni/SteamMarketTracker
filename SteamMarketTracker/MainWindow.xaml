@@ -8,6 +8,7 @@
         xmlns:converters="clr-namespace:SteamMarketTracker.Converters"
         xmlns:vm="clr-namespace:SteamMarketTracker.ViewModels"
         mc:Ignorable="d"
+        x:Name="this"
         Title="Steam Market Tracker" Height="450" Width="800">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -18,7 +19,7 @@
 
     <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>   
             <StackPanel Grid.Column="0">
@@ -43,18 +44,21 @@
             </StackPanel>
             <uc:SearchItemUC 
             Grid.Column="1" 
-            Visibility="{Binding SearchItemUCShow,
+            DataContext="{Binding SearchItemVM}"
+            Visibility="{Binding SearchItemUcShow,
             UpdateSourceTrigger=PropertyChanged,
             Converter={StaticResource BoolToVisibilityConverter}}"
             />
             <uc:TrackedItemsUC 
             Grid.Column="1" 
-            Visibility="{Binding TrackedItemsUCShow,
+            DataContext="{Binding TrackedItemsVM}"
+            Visibility="{Binding TrackedItemsUcShow,
             UpdateSourceTrigger=PropertyChanged,
             Converter={StaticResource BoolToVisibilityConverter}}"
             />
             <uc:SavedItemsUC 
             Grid.Column="1" 
+            DataContext="{Binding SavedItemsVM}"
             Visibility="{Binding SavedItemsUcShow,
             UpdateSourceTrigger=PropertyChanged,
             Converter={StaticResource BoolToVisibilityConverter}}"

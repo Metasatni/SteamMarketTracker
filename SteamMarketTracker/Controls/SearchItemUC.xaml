@@ -3,10 +3,182 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mvvm="clr-namespace:MvvmEventBinding;assembly=MvvmEventBinding"
              xmlns:local="clr-namespace:SteamMarketTracker.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+    >
+
     <Grid>
-        <TextBlock Text="SearchItemUC"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="206*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal" 
+                    Grid.RowSpan="3">
+            <TextBox 
+            x:Name="SearchTermTextBox"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Height="20"
+            Width="400"
+            Margin="5,5,0,0"
+            Text="{Binding SearchString,
+                Mode=TwoWay,
+                UpdateSourceTrigger=PropertyChanged}"
+            />
+
+            <ComboBox Grid.Row="0" 
+                      Height="25"
+                      VerticalAlignment="Top"
+                      Margin="5,3,0,0"
+                      SelectionChanged="{mvvm:EventBinding SortTypeCommand}"
+                      >
+
+                <ComboBoxItem Tag="SortBy" IsSelected="True" IsEnabled="False">
+                    <TextBlock Text="Sort by"/>
+                </ComboBoxItem>
+
+                <ComboBoxItem Tag="&amp;sort_column=name&amp;sort_dir=asc">
+                    <TextBlock Text="Name (A-Z)"/>
+                </ComboBoxItem>
+
+                <ComboBoxItem Tag="&amp;sort_column=name&amp;sort_dir=desc">
+                    <TextBlock Text="Name (Z-A)"/>
+                </ComboBoxItem>
+
+                <ComboBoxItem Tag="&amp;sort_column=price&amp;sort_dir=asc">
+                    <TextBlock Text="Price (low-high)"/>
+                </ComboBoxItem>
+
+                <ComboBoxItem Tag="&amp;sort_column=price&amp;sort_dir=desc">
+                    <TextBlock Text="Price (high-low)"/>
+                </ComboBoxItem>
+
+                <ComboBoxItem Tag="&amp;sort_column=quantity&amp;sort_dir=asc">
+                    <TextBlock Text="Quantity (low-high)"/>
+                </ComboBoxItem>
+
+                <ComboBoxItem Tag="&amp;sort_column=quantity&amp;sort_dir=desc">
+                    <TextBlock Text="Quantity (high-low)"/>
+                </ComboBoxItem>
+            </ComboBox>
+
+            <Button 
+            Width="100"
+            Height="25"
+            Content="Search"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Margin="5,3,0,0"
+            Command="{Binding SearchCommand}"
+            />
+
+        </StackPanel>
+        <TextBlock
+            IsHitTestVisible="False"
+            Text="example: AWP | Hyper Beast"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Margin="10,5,0,0"
+            Foreground="DarkGray" Grid.RowSpan="2">
+            <TextBlock.Style>
+                <Style
+                TargetType="{x:Type TextBlock}">
+                    <Setter
+                    Property="Visibility"
+                    Value="Collapsed"
+                    />
+                    <Style.Triggers>
+                        <DataTrigger
+                        Binding="{Binding Text,
+                        ElementName=SearchTermTextBox}"
+                        Value=""
+                        >
+                            <Setter
+                            Property="Visibility"
+                            Value="Visible"
+                            />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <DataGrid 
+            VerticalAlignment="Top"
+            Margin="5,13,5,5"
+            Grid.Row="1"
+            Background="White" 
+            AlternatingRowBackground="White"
+            RowBackground="White"
+            ItemsSource="{Binding FoundItems,
+            UpdateSourceTrigger=PropertyChanged
+            }"
+            MaxHeight="1000"
+            AutoGenerateColumns="False"
+            Grid.RowSpan="2">
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{x:Static SystemColors.ControlColor}" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{x:Static SystemColors.ControlTextColor}" />
+                    </Style.Resources>
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+
+                <DataGridTemplateColumn Width="200" Header="Name" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Image HorizontalAlignment="Center" Height="50" Width="50" Source="{Binding ImageSource}" />
+                                <TextBox BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Center" Text="{Binding Name}">
+                                    <TextBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                                        </ContextMenu>
+                                    </TextBox.ContextMenu>
+                                </TextBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="*" Header="Name" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBox BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Center" Text="{Binding Url}">
+                                    <TextBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                                        </ContextMenu>
+                                    </TextBox.ContextMenu>
+                                </TextBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="100" Header="Name" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBox BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Center" Text="{Binding Price}">
+                                    <TextBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                                        </ContextMenu>
+                                    </TextBox.ContextMenu>
+                                </TextBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
