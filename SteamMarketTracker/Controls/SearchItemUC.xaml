@@ -6,7 +6,7 @@
              xmlns:mvvm="clr-namespace:MvvmEventBinding;assembly=MvvmEventBinding"
              xmlns:local="clr-namespace:SteamMarketTracker.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="900" d:DesignWidth="1200"
     >
 
     <Grid>
@@ -23,7 +23,7 @@
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             Height="20"
-            Width="400"
+            Width="342"
             Margin="5,5,0,0"
             Text="{Binding SearchString,
                 Mode=TwoWay,
@@ -66,13 +66,51 @@
                 </ComboBoxItem>
             </ComboBox>
 
+            <TextBlock 
+               VerticalAlignment="Top"
+               Text="Items per search"
+               Margin="10, 5, 0, 5"
+               Height="25"
+                   />
+            <Slider 
+                Margin="10, 7, 0, 0" 
+                VerticalAlignment="Top"
+                Width="160"
+                Height="25"
+                Minimum="10"
+                Maximum="200"
+                TickFrequency="10"
+                IsSnapToTickEnabled="True"
+                Value="{Binding SliderValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                />
+            <TextBlock 
+               VerticalAlignment="Top" 
+               Text="{Binding SliderValue}"
+               Margin="0, 5, 0, 5"
+               />
+
+            <TextBlock
+                VerticalAlignment="Top"
+                Text="AppID:"
+                Margin="20, 6, 0, 5"
+                />
+            <TextBox
+                VerticalAlignment="Top"
+                Margin="5, 3, 0, 5"
+                Height="25"
+                Width="100"
+                Text="{Binding AppId, 
+                Mode=TwoWay,
+                UpdateSourceTrigger=PropertyChanged}"
+                />
+
             <Button 
             Width="100"
             Height="25"
             Content="Search"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Margin="5,3,0,0"
+            Margin="10,3,0,0"
             Command="{Binding SearchCommand}"
             />
 
@@ -148,7 +186,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="*" Header="Name" IsReadOnly="True">
+                <DataGridTemplateColumn Width="*" Header="Url" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel VerticalAlignment="Center">
@@ -163,7 +201,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="100" Header="Name" IsReadOnly="True">
+                <DataGridTemplateColumn Width="100" Header="Price" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel VerticalAlignment="Center">

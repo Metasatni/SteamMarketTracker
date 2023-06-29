@@ -10,10 +10,10 @@ namespace SteamMarketTracker.Services
 {
     internal class SearchService
     {
-        public async Task<List<FoundItem>> GetItemsAsync(string name, string sortType)
+        public async Task<List<FoundItem>> GetItemsAsync(string name, string sortType, int count, string appid)
         {
             var items = new List<FoundItem>();
-            var responseModel = await GetResponseModel(name, sortType);
+            var responseModel = await GetResponseModel(name, sortType, count, appid);
             string[] responseModels;
             responseModels = responseModel.results_html.Split("<a class=\"market_listing_row_link\"");
             for (int i = 1; i < responseModels.Count(); i++)
@@ -28,16 +28,16 @@ namespace SteamMarketTracker.Services
             }
             return items;
         }
-        public async Task<SearchResponseModel> GetResponseModel(string name, string sortType)
+        public async Task<SearchResponseModel> GetResponseModel(string name, string sortType, int count, string appid)
         {
             if (sortType == null)
             {
-                string url = "https://steamcommunity.com/market/search/render/?query=" + name;
+                string url = "https://steamcommunity.com/market/search/render/?query=" + name + "&count="+count + "&appid=" + appid;
                 return await TryGetResponseModel(url);
             }
             else
             {
-                string url = "https://steamcommunity.com/market/search/render/?query=" + name + sortType;
+                string url = "https://steamcommunity.com/market/search/render/?query=" + name + sortType + "&count="+count + "&appid=" + appid;
                 return await TryGetResponseModel(url);
             }
         }
