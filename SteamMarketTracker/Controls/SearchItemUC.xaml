@@ -7,7 +7,10 @@
              xmlns:local="clr-namespace:SteamMarketTracker.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="1200"
+             x:Name="root"
     >
+
+    
 
     <Grid>
         <Grid.RowDefinitions>
@@ -205,13 +208,38 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBox BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Center" Text="{Binding Price}">
+                                <TextBox BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Center" Text="{Binding Price.Value}">
                                     <TextBox.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
                                         </ContextMenu>
                                     </TextBox.ContextMenu>
                                 </TextBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="100" Header="Favorite">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <Button Content="Add/Remove"
+                                Height="20"
+                                Command="{Binding Source={x:Reference root},
+                                    Path=DataContext.FavoriteClickCommand}"
+                                    CommandParameter="{Binding Url}"
+                            />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="100" Header="">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Favorite,
+                            UpdateSourceTrigger=PropertyChanged}"
+                                   />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

@@ -5,8 +5,106 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SteamMarketTracker.Controls"
              mc:Ignorable="d" 
+             x:Name="rootTracked"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="TrackedItemsUC"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="206*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+            <Button 
+            Grid.Row="0"
+                Width="100"
+                Height="25"
+                Command="{Binding RefreshCommand}"
+                Content="Refresh"/>
+        <DataGrid 
+            VerticalAlignment="Top"
+            Margin="5,13,5,5"
+            Grid.Row="1"
+            Background="White" 
+            AlternatingRowBackground="White"
+            RowBackground="White"
+            ItemsSource="{Binding SavedItems,
+            UpdateSourceTrigger=PropertyChanged
+            }"
+            MaxHeight="1000"
+            AutoGenerateColumns="False"
+            Grid.RowSpan="2">
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{x:Static SystemColors.ControlColor}" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{x:Static SystemColors.ControlTextColor}" />
+                    </Style.Resources>
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.Columns>
+
+                <DataGridTemplateColumn Width="200" Header="Name" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <Image HorizontalAlignment="Center" Height="50" Width="50" Source="{Binding ImageSource}" />
+                                <TextBox BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Center" Text="{Binding Name}">
+                                    <TextBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                                        </ContextMenu>
+                                    </TextBox.ContextMenu>
+                                </TextBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="*" Header="Url" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBox BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Center" Text="{Binding Url}">
+                                    <TextBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                                        </ContextMenu>
+                                    </TextBox.ContextMenu>
+                                </TextBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="100" Header="Price" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBox BorderThickness="0" IsReadOnly="True" HorizontalAlignment="Center" Text="{Binding Price.Value}">
+                                    <TextBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Copy" Command="ApplicationCommands.Copy" />
+                                        </ContextMenu>
+                                    </TextBox.ContextMenu>
+                                </TextBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="100" Header="Favorite">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <Button Content="Add/Remove"
+                                Height="20"
+                                Command="{Binding Source={x:Reference rootTracked},
+                                    Path=DataContext.FavoriteClickCommand}"
+                                    CommandParameter="{Binding Url}"
+                            />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

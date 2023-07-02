@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SteamMarketTracker.Services
@@ -18,17 +19,18 @@ namespace SteamMarketTracker.Services
             responseModels = responseModel.results_html.Split("<a class=\"market_listing_row_link\"");
             for (int i = 1; i < responseModels.Count(); i++)
             {
-                var allItemsCount = responseModel.total_count;
                 var fullName = GetBetween(responseModels[i], "data-hash-name=\"", "\"");
                 var imageUrl = GetBetween(responseModels[i], "\"result_" + (i - 1).ToString() + "_image\" src=\"", "\"");
                 var url = GetBetween(responseModels[i], "href=\"", "\"");
                 var currency = Convert.ToInt32(GetBetween(responseModels[i], "data-currency=\"", "\""));
                 var price = GetBetween(responseModels[i], "data-currency=\"" + currency + "\">", "</span>");
-                items.Add(new FoundItem(allItemsCount, fullName, imageUrl, url, currency, price));
+                string digits = string.Join("", price.Where(x => char.IsNumber(x)));
+                double priceValue = Convert.ToDouble(digits) / 100;
+                items.Add(new FoundItem(fullName, imageUrl, url, currency, new Price(DateTime.Now, priceValue))); 
             }
             return items;
         }
-        public async Task<SearchResponseModel> GetResponseModel(string name, string sortType, int count, string appid)
+        private async Task<SearchResponseModel> GetResponseModel(string name, string sortType, int count, string appid)
         {
             if (sortType == null)
             {
@@ -41,7 +43,7 @@ namespace SteamMarketTracker.Services
                 return await TryGetResponseModel(url);
             }
         }
-        public async Task<SearchResponseModel> TryGetResponseModel(string url)
+        private async Task<SearchResponseModel> TryGetResponseModel(string url)
         {
             try
             {

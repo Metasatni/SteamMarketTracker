@@ -1,5 +1,4 @@
-﻿using SteamMarketTracker.ViewModels;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace SteamMarketTracker.Controls
 {
@@ -11,11 +10,6 @@ namespace SteamMarketTracker.Controls
         public SearchItemUC()
         {
             InitializeComponent();
-        }
-
-        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            DataContext = new SearchItemVM();
         }
     }
 }
