@@ -2,9 +2,10 @@
 using SteamMarketTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace SteamMarketTracker.Services
@@ -19,14 +20,36 @@ namespace SteamMarketTracker.Services
             responseModels = responseModel.results_html.Split("<a class=\"market_listing_row_link\"");
             for (int i = 1; i < responseModels.Count(); i++)
             {
-                var fullName = GetBetween(responseModels[i], "data-hash-name=\"", "\"");
-                var imageUrl = GetBetween(responseModels[i], "\"result_" + (i - 1).ToString() + "_image\" src=\"", "\"");
-                var url = GetBetween(responseModels[i], "href=\"", "\"");
-                var currency = Convert.ToInt32(GetBetween(responseModels[i], "data-currency=\"", "\""));
-                var price = GetBetween(responseModels[i], "data-currency=\"" + currency + "\">", "</span>");
+                var fullName = StaticTools.GetBetween(responseModels[i], "data-hash-name=\"", "\"");
+                var imageUrl = StaticTools.GetBetween(responseModels[i], "\"result_" + (i - 1).ToString() + "_image\" src=\"", "\"");
+                var url = StaticTools.GetBetween(responseModels[i], "href=\"", "\"");
+                var currency = Convert.ToInt32(StaticTools.GetBetween(responseModels[i], "data-currency=\"", "\""));
+                var price = StaticTools.GetBetween(responseModels[i], "data-currency=\"" + currency + "\">", "</span>");
+                var appId = StaticTools.GetBetween(responseModels[i], "data-appid=\"", "\"");
                 string digits = string.Join("", price.Where(x => char.IsNumber(x)));
                 double priceValue = Convert.ToDouble(digits) / 100;
-                items.Add(new FoundItem(fullName, imageUrl, url, currency, new Price(DateTime.Now, priceValue))); 
+                items.Add(new FoundItem(fullName, imageUrl, url, currency, new Price(DateTime.Now, priceValue), appId, new ObservableCollection<Price>()));
+            }
+            return items;
+        }
+        public async Task<List<FoundItem>> GetItemAsync(string name, string appid)
+        {
+            var items = new List<FoundItem>();
+            string uri = "https://steamcommunity.com/market/search/render/?query=" + name + "&count=" + 1 + "&appid=" + appid;
+            var responseModel = await TryGetResponseModel(uri);
+            string[] responseModels;
+            responseModels = responseModel.results_html.Split("<a class=\"market_listing_row_link\"");
+            for (int i = 1; i < responseModels.Count(); i++)
+            {
+                var fullName = StaticTools.GetBetween(responseModels[i], "data-hash-name=\"", "\"");
+                var imageUrl = StaticTools.GetBetween(responseModels[i], "\"result_" + (i - 1).ToString() + "_image\" src=\"", "\"");
+                var url = StaticTools.GetBetween(responseModels[i], "href=\"", "\"");
+                var currency = Convert.ToInt32(StaticTools.GetBetween(responseModels[i], "data-currency=\"", "\""));
+                var price = StaticTools.GetBetween(responseModels[i], "data-currency=\"" + currency + "\">", "</span>");
+                var appId = StaticTools.GetBetween(responseModels[i], "data-appid=\"", "\"");
+                string digits = string.Join("", price.Where(x => char.IsNumber(x)));
+                double priceValue = Convert.ToDouble(digits) / 100;
+                items.Add(new FoundItem(fullName, imageUrl, url, currency, new Price(DateTime.Now, priceValue), appId, new ObservableCollection<Price>()));
             }
             return items;
         }
@@ -34,12 +57,12 @@ namespace SteamMarketTracker.Services
         {
             if (sortType == null)
             {
-                string url = "https://steamcommunity.com/market/search/render/?query=" + name + "&count="+count + "&appid=" + appid;
+                string url = "https://steamcommunity.com/market/search/render/?query=" + name + "&count=" + count + "&appid=" + appid;
                 return await TryGetResponseModel(url);
             }
             else
             {
-                string url = "https://steamcommunity.com/market/search/render/?query=" + name + sortType + "&count="+count + "&appid=" + appid;
+                string url = "https://steamcommunity.com/market/search/render/?query=" + name + sortType + "&count=" + count + "&appid=" + appid;
                 return await TryGetResponseModel(url);
             }
         }
@@ -56,17 +79,6 @@ namespace SteamMarketTracker.Services
             {
                 return new SearchResponseModel();
             }
-        }
-        public static string GetBetween(string strSource, string strStart, string strEnd)
-        {
-            if (strSource.Contains(strStart) && strSource.Contains(strEnd))
-            {
-                int Start, End;
-                Start = strSource.IndexOf(strStart, 0) + strStart.Length;
-                End = strSource.IndexOf(strEnd, Start);
-                return strSource.Substring(Start, End - Start);
-            }
-            return "";
         }
     }
 }

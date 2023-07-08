@@ -8,8 +8,9 @@ using System.Windows.Documents;
 
 namespace SteamMarketTracker.Managers
 {
-    public class SMTFileManager
+    public class FileManager
     {
+        static Database _database => ServiceContainer.GetService<Database>();
         public static void SaveItemToDataFile(object item)
         {
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SteamMarketTracker");
@@ -41,6 +42,15 @@ namespace SteamMarketTracker.Managers
                     var obj = (FoundItem)item;
                 ObservableCollection<FoundItem> items = new ObservableCollection<FoundItem> { obj };
                 File.WriteAllText(filePath, JsonConvert.SerializeObject(items, Formatting.Indented));
+            }
+        }
+        public static void UpdateDataFile()
+        {
+            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SteamMarketTracker");
+            string filePath = Path.Combine(folder, "FavoriteItems.json");
+            if (File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, JsonConvert.SerializeObject(_database.SavedItems, Formatting.Indented));
             }
         }
         public static string GetDataFile()

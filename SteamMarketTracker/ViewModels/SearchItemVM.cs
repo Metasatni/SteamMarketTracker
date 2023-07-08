@@ -48,7 +48,7 @@ namespace SteamMarketTracker.ViewModels
         {
             string str = (string)obj;
             var item = FoundItems.Where(x => x.Url == str).FirstOrDefault();
-            SMTFileManager.SaveItemToDataFile(item);
+            FileManager.SaveItemToDataFile(item);
             item.Favorite = !item.Favorite;
         }
         private async void Search(object? _)

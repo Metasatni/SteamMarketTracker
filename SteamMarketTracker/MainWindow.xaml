@@ -35,6 +35,12 @@
                 Margin="5,5,5,5"
                 Command="{Binding ShowTrackedItemsUcCommand}"
                 />
+                <Button
+                Content="Settings"
+                Height="25" 
+                Margin="5,5,5,5"
+                Command="{Binding ShowSettingsUcCommand}"
+                />
             </StackPanel>
             <uc:SearchItemUC 
             Grid.Column="1" 
@@ -47,6 +53,13 @@
             Grid.Column="1" 
             DataContext="{Binding TrackedItemsVM}"
             Visibility="{Binding TrackedItemsUcShow,
+            UpdateSourceTrigger=PropertyChanged,
+            Converter={StaticResource BoolToVisibilityConverter}}"
+            />
+            <uc:SettingsUC 
+            Grid.Column="1" 
+            DataContext="{Binding SettingsVM}"
+            Visibility="{Binding SettingsUcShow,
             UpdateSourceTrigger=PropertyChanged,
             Converter={StaticResource BoolToVisibilityConverter}}"
             />
