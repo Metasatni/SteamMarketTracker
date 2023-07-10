@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using SteamMarketTracker.Managers;
 using SteamMarketTracker.Models;
+using SteamMarketTracker.Windows;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -23,6 +24,7 @@ namespace SteamMarketTracker.ViewModels
         public bool TrackedItemsUcShow { get { return _trackedItemsUcShow; } set { _trackedItemsUcShow = value; OnPropertyChanged(); } }
         public ICommand RefreshCommand { get; }
         public ICommand FavoriteClickCommand { get; }
+        public ICommand HistoryClickCommand { get; }
 
         public TrackedItemsVM()
         {
@@ -33,6 +35,8 @@ namespace SteamMarketTracker.ViewModels
               execute: Refresh);
             this.FavoriteClickCommand = new Command(
                 execute: FavoriteClick);
+            this.HistoryClickCommand = new Command(
+                execute: HistoryClick);
         }
         private void FavoriteClick(object? obj)
         {
@@ -40,6 +44,17 @@ namespace SteamMarketTracker.ViewModels
             var item = _database.SavedItems.Where(x => x.Url == str).FirstOrDefault();
             FileManager.SaveItemToDataFile(item);
             Refresh();
+        }
+        private void HistoryClick(object? obj)
+        {
+            string str = (string)obj;
+            var item = _database.SavedItems.Where(x => x.Url == str).FirstOrDefault();
+            if (item != null)
+            {
+                ItemHistoryWindow itemHistoryWindow = new ItemHistoryWindow();
+                itemHistoryWindow.DataContext = new ItemHistoryWindowVM(item);
+                itemHistoryWindow.Show();
+            }
         }
         private void Refresh(object? obj)
         {
@@ -77,7 +92,7 @@ namespace SteamMarketTracker.ViewModels
         private void _database_DataChanged(string obj)
         {
             SavedItems = _database.SavedItems;
-            if (_database.SavedItems.Count > 0 && !_refreshingState)
+            if (_database.SavedItems.Count > 0)
             {
                 _refreshingState = true;
                 RefreshItemsPrice();

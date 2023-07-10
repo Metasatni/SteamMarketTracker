@@ -10,6 +10,7 @@ namespace SteamMarketTracker.ViewModels
 {
     public class SearchItemVM : ViewModel
     {
+        private Database _database => ServiceContainer.GetService<Database>();
         private bool _searchItemUcShow;
         private int _sliderValue;
         private string _appid;
@@ -57,6 +58,14 @@ namespace SteamMarketTracker.ViewModels
             var items = await service.GetItemsAsync(SearchString, SortType, SliderValue, AppId);
             if (items != null)
             {
+                foreach (var item in items)
+                {
+                    foreach (var itemDatabase in _database.SavedItems)
+                    {
+                        if (itemDatabase.Url == item.Url)
+                            item.Favorite = true;
+                    }
+                }
                 FoundItems = new ObservableCollection<FoundItem>(items);
             }
             else

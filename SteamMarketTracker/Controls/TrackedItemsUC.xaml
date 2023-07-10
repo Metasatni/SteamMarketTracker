@@ -20,6 +20,7 @@
                 Command="{Binding RefreshCommand}"
                 Content="Refresh"/>
         <DataGrid 
+        CanUserAddRows="False"
             VerticalAlignment="Top"
             Margin="5,13,5,5"
             Grid.Row="1"
@@ -98,6 +99,20 @@
                                 Height="20"
                                 Command="{Binding Source={x:Reference rootTracked},
                                     Path=DataContext.FavoriteClickCommand}"
+                                    CommandParameter="{Binding Url}"
+                            />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="100" Header="History">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <Button Content="History"
+                                Height="20"
+                                Command="{Binding Source={x:Reference rootTracked},
+                                    Path=DataContext.HistoryClickCommand}"
                                     CommandParameter="{Binding Url}"
                             />
                             </StackPanel>
