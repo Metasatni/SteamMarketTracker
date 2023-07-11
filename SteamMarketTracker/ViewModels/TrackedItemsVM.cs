@@ -12,13 +12,14 @@ namespace SteamMarketTracker.ViewModels
 {
     public class TrackedItemsVM : ViewModel
     {
+        private CancellationToken token;
         private bool _refreshingState;
+        private bool _trackedItemsUcShow;
+        private int _refreshTime;
         private Database _database => ServiceContainer.GetService<Database>();
         private ObservableCollection<SavedItem> _savedItems;
         public ObservableCollection<SavedItem> SavedItems { get { return _savedItems; } set { _savedItems = value; OnPropertyChanged(); } }
-        private bool _trackedItemsUcShow;
-        private int _refreshTime;
-        private CancellationToken token;
+        public bool RefreshingState { get { return _refreshingState; } set { _refreshingState = value; OnPropertyChanged(); } }
 
         public int RefreshTime { get { return _refreshTime; } set { _refreshTime = value; OnPropertyChanged(); } }
         public bool TrackedItemsUcShow { get { return _trackedItemsUcShow; } set { _trackedItemsUcShow = value; OnPropertyChanged(); } }
@@ -79,13 +80,14 @@ namespace SteamMarketTracker.ViewModels
             {
                 if (list != _database.SavedItems)
                 {
-                    _refreshingState = false;
+                    RefreshingState = false;
                     return;
                 }
                 await Task.Delay(20000).WaitAsync(cancellationToken: token);
                 item.RefreshPrice();
 
             }
+            RefreshingState = false;
             RefreshItemsPrice();
         }
 
@@ -94,7 +96,7 @@ namespace SteamMarketTracker.ViewModels
             SavedItems = _database.SavedItems;
             if (_database.SavedItems.Count > 0)
             {
-                _refreshingState = true;
+                RefreshingState = true;
                 RefreshItemsPrice();
             }
         }

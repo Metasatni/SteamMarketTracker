@@ -18,50 +18,56 @@
     </Window.DataContext>
 
     <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>   
-            <StackPanel Grid.Column="0">
-                <Button
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <Button
                 Content="Search items"
                 Height="25" 
                 Margin="5,5,5,5"
                 Command="{Binding ShowSearchItemUcCommand}"
                 />
-                <Button
+            <Button
                 Content="Tracked items"
                 Height="25" 
                 Margin="5,5,5,5"
                 Command="{Binding ShowTrackedItemsUcCommand}"
                 />
-                <Button
+            <Button
                 Content="Settings"
                 Height="25" 
                 Margin="5,5,5,5"
                 Command="{Binding ShowSettingsUcCommand}"
                 />
-            </StackPanel>
-            <uc:SearchItemUC 
+            <RadioButton
+                Content="Active" 
+                HorizontalAlignment="Center"
+                IsChecked="{Binding TrackedItemsVM.RefreshingState}"
+                IsEnabled="False"
+                />
+        </StackPanel>
+        <uc:SearchItemUC 
             Grid.Column="1" 
             DataContext="{Binding SearchItemVM}"
             Visibility="{Binding SearchItemUcShow,
             UpdateSourceTrigger=PropertyChanged,
             Converter={StaticResource BoolToVisibilityConverter}}"
             />
-            <uc:TrackedItemsUC 
+        <uc:TrackedItemsUC 
             Grid.Column="1" 
             DataContext="{Binding TrackedItemsVM}"
             Visibility="{Binding TrackedItemsUcShow,
             UpdateSourceTrigger=PropertyChanged,
             Converter={StaticResource BoolToVisibilityConverter}}"
             />
-            <uc:SettingsUC 
+        <uc:SettingsUC 
             Grid.Column="1" 
             DataContext="{Binding SettingsVM}"
             Visibility="{Binding SettingsUcShow,
             UpdateSourceTrigger=PropertyChanged,
             Converter={StaticResource BoolToVisibilityConverter}}"
             />
-        </Grid>
+    </Grid>
 </Window>
