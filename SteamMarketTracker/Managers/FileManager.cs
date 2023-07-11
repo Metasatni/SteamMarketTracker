@@ -19,27 +19,30 @@ namespace SteamMarketTracker.Managers
             {
                 var file = File.ReadAllText(filePath);
                 var serializedItems = JsonConvert.DeserializeObject<ObservableCollection<FoundItem>>(file);
-                if(item is SavedItem)
+                if (item is SavedItem)
                 {
                     var obj = (SavedItem)item;
                     serializedItems.Remove(serializedItems.Where(x => x.Url == obj.Url).FirstOrDefault());
                 }
-                else if (serializedItems.Contains(item))
-                {
-                    var obj = (FoundItem)item;
-                    serializedItems.Remove(obj);
-                }
                 else
                 {
                     var obj = (FoundItem)item;
-                    serializedItems.Add(obj);
+                    if (serializedItems.Where(x => x.Url == obj.Url).Any())
+                    {
+                        var itemToRemove = serializedItems.Where(x => x.Url == obj.Url).FirstOrDefault();
+                        serializedItems.Remove(itemToRemove);
+                    }
+                    else
+                    {
+                        serializedItems.Add(obj);
+                    }
                 }
 
                 File.WriteAllText(filePath, JsonConvert.SerializeObject(serializedItems, Formatting.Indented));
             }
             else
             {
-                    var obj = (FoundItem)item;
+                var obj = (FoundItem)item;
                 ObservableCollection<FoundItem> items = new ObservableCollection<FoundItem> { obj };
                 File.WriteAllText(filePath, JsonConvert.SerializeObject(items, Formatting.Indented));
             }
