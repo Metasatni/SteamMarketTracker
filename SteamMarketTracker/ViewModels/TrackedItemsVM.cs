@@ -49,7 +49,7 @@ namespace SteamMarketTracker.ViewModels
         private void HistoryClick(object? obj)
         {
             string str = (string)obj;
-            var item = _database.SavedItems.Where(x => x.Url == str).FirstOrDefault();
+            var item = _database.SavedItems.FirstOrDefault(x => x.Url == str);
             if (item != null)
             {
                 ItemHistoryWindow itemHistoryWindow = new ItemHistoryWindow();
@@ -75,6 +75,7 @@ namespace SteamMarketTracker.ViewModels
         }
         private async void RefreshItemsPrice()
         {
+            RefreshingState = true;
             var list = _database.SavedItems;
             foreach (var item in _database.SavedItems)
             {
@@ -96,7 +97,6 @@ namespace SteamMarketTracker.ViewModels
             SavedItems = _database.SavedItems;
             if (_database.SavedItems.Count > 0)
             {
-                RefreshingState = true;
                 RefreshItemsPrice();
             }
         }

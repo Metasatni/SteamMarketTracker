@@ -29,7 +29,9 @@
             ItemsSource="{Binding SavedItem.Prices,
             UpdateSourceTrigger=PropertyChanged
             }"
-            MaxHeight="1000"
+            HorizontalScrollBarVisibility="Auto"
+            VerticalScrollBarVisibility="Auto"
+            MaxHeight="600"
             AutoGenerateColumns="False"
             Grid.RowSpan="2">
 
